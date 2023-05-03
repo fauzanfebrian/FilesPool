@@ -20,8 +20,7 @@ jobs:
                   npm run build
                   npm run build:exe
                   cp -r ./files ./executable
-                  git add executable/
-                  git reset -- $(git ls-files --others --exclude-standard)
+                  git add -f executable/*
             - name: Commit changes
               run: |
                   git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"

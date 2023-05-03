@@ -72,7 +72,9 @@ app.listen(port, async () => {
     }
     try {
         const tunnel = await localtunnel(port)
+
         console.log('Your FilesPool URL:', tunnel.url)
+        console.log('Copy & Paste the link to your browser')
 
         tunnel.on('close', () => console.log('FilesPool Tunnel closed'))
         process.on('SIGINT', () => {

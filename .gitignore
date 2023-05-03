@@ -1,6 +1,7 @@
-node_modules
-dist
+*
+!.gitignore
+!.filespool-*
 files/*
+!files
 !files/nodata
-.env
-executable
+!views

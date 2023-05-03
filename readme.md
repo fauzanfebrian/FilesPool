@@ -17,6 +17,10 @@ To use FilesPool, follow these steps:
     cd FilesPool
     npm install
     ```
+    for windows user:
+    ```bash
+    npm install -g win-node-env
+    ```
 3. Put the files that you want to expose in the "files" folder.
 4. Start the server
     ```bash

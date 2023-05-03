@@ -30,4 +30,4 @@ jobs:
               uses: ad-m/github-push-action@master
               with:
                   github_token: ${{ secrets.GH_TOKEN }}
-                  branch: my-other-branch
+                  branch: executable

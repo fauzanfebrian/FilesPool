@@ -7,7 +7,7 @@
         "start": "npm run build && NODE_ENV=production node dist/main.js",
         "dev": "NODE_ENV=development nodemon main.ts",
         "build": "rimraf dist && tsc",
-        "build:exe": "pkg ."
+        "build:exe": "node dist/build.js"
     },
     "keywords": [],
     "author": "",
@@ -31,12 +31,13 @@
     },
     "bin": "./dist/main.js",
     "pkg": {
-        "assets": "public/**/*",
-        "target": [
+        "assets": [
+            "views/**/*"
+        ],
+        "targets": [
             "node16-linux-x64",
             "node16-mac-x64",
             "node16-win-x64"
-        ],
-        "outputPath": "executable"
+        ]
     }
 }

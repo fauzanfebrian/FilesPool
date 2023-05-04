@@ -3,4 +3,4 @@ dist
 files/*
 !files/nodata
 .env
-executable
+filespool-*

@@ -12,9 +12,12 @@ async function executeCommand(command: string) {
 
 async function Build() {
     try {
-        const mainDirectory = fs.readdirSync('.')
+        const mainDirectory = fs.readdirSync(process.cwd())
 
-        if (mainDirectory.includes('filespool')) {
+        console.log('Convert ts to js')
+        await executeCommand('npm run build')
+
+        if (mainDirectory.find(name => name.includes('filespool'))) {
             console.log('Removing filespool build')
             await executeCommand('rm -r filespool*')
         }

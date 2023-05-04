@@ -1,4 +1,5 @@
 import { exec } from 'child_process'
+import fs from 'fs'
 
 async function executeCommand(command: string) {
     return new Promise((resolve, reject) => {
@@ -10,10 +11,18 @@ async function executeCommand(command: string) {
 }
 
 async function Build() {
-    console.log('Removing filespool build')
-    await executeCommand('rm -r filespool*')
-    console.log('Build filespool')
-    const stdOut = await executeCommand('pkg --compress GZip .')
-    console.log(stdOut)
+    try {
+        const mainDirectory = fs.readdirSync('.')
+
+        if (mainDirectory.includes('filespool')) {
+            console.log('Removing filespool build')
+            await executeCommand('rm -r filespool*')
+        }
+        console.log('Build filespool')
+        const stdOut = await executeCommand('pkg --compress GZip .')
+        console.log(stdOut)
+    } catch (error) {
+        console.error('Error when build', error)
+    }
 }
 Build()

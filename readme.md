@@ -21,14 +21,15 @@ To use FilesPool, follow these steps:
     ```bash
     npm install -g win-node-env
     ```
-3. Put the files that you want to expose in the "files" folder.
-4. Start the server
+3. Create file .env and copy the value from .env.example
+4. Put the files that you want to expose in the "files" folder.
+5. Start the server
     ```bash
     npm start
     ```
-5. Open the link shown in your terminal to access the app and download files from the exposed directory.
+6. Open the link shown in your terminal to access the app and download files from the exposed directory.
 
-Or another simpler step:
+Or another simpler step (slower download):
 
 1. [Download Zip File](https://github.com/fauzanfebrian/FilesPool/archive/refs/heads/executable.zip)
 2. Extract the zip & open the folder

@@ -1,10 +1,10 @@
 import dotenv from 'dotenv'
 import express from 'express'
-import localtunnel from 'localtunnel'
-import path from 'path'
+import fs from 'fs'
 import { readdir, readFile } from 'fs/promises'
 import JSZip from 'jszip'
-import fs from 'fs'
+import ngrok from 'ngrok'
+import path from 'path'
 
 dotenv.config()
 
@@ -12,7 +12,7 @@ const app = express()
 
 const filesUri = 'files'
 // change this variable if you want change the exposed directory
-const filesDirectoryPath = path.resolve(process.cwd(), 'files')
+const filesDirectoryPath = path.join(process.cwd(), 'files')
 
 app.set('view engine', 'ejs')
 
@@ -24,7 +24,7 @@ app.get(`/${filesUri}/zip`, async (_req, res) => {
         for (const file of filesName) {
             if (file === 'nodata') continue
 
-            const filePath = path.resolve(filesDirectoryPath, file)
+            const filePath = path.join(filesDirectoryPath, file)
             const buffer = readFile(filePath)
 
             zip.file(file, buffer)
@@ -71,14 +71,14 @@ app.listen(port, async () => {
         return
     }
     try {
-        const tunnel = await localtunnel(port)
+        const url = await ngrok.connect({ addr: port, authtoken: process.env.NGROK_AUTH_TOKEN })
 
-        console.log('Your FilesPool URL:', tunnel.url)
+        console.log('Your FilesPool URL:', url)
         console.log('Copy & Paste the url to your browser')
 
-        tunnel.on('close', () => console.log('FilesPool Tunnel closed'))
-        process.on('SIGINT', () => {
-            tunnel.close()
+        process.on('SIGINT', async () => {
+            await ngrok.disconnect()
+            await ngrok.kill()
             process.exit(0)
         })
     } catch (error) {

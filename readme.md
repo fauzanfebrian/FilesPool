@@ -21,8 +21,8 @@ To use FilesPool, follow these steps:
     ```bash
     npm install -g win-node-env
     ```
-3. Create file .env and copy the value from .env.example
-4. Put the files that you want to expose in the "files" folder.
+3. Create file `.env` and copy the value from `.env.example`
+4. Put the files that you want to expose in the `files` folder.
 5. Start the server
     ```bash
     npm start

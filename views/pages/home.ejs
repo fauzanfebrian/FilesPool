@@ -13,11 +13,15 @@
 
   <p>Hello there, this is list of files that you can download</p>
 
-  <a href="<%= filesZipUrl %>" download="FilesPool-<%= new Date().getTime() %>">Or Download All as Zip</a>
+  <a href="<%= filesZipUrl %>">Or Download All as Zip</a>
   <ul>
     <% files.forEach(function(file) { %>
-    <li><a href="<%= file.url %>" download="<%= file.name %>"><%= file.name %></a></li>
+    <li><a href="<%= file.url %>"><%= file.name %></a></li>
     <% }) %>
+    <% if (subFolder) { %>
+    <br>
+    <a href="/">Back to home</a>
+    <% } %>
   </ul>
 </body>
 

@@ -47,4 +47,22 @@ describe('zipping', () => {
 
         jest.resetAllMocks()
     })
+
+    it('should accept ranges', async () => {
+        const mockPipe = jest.fn()
+        const mockResSet = jest.fn()
+        const mockReadStreamFrom = jest.fn().mockReturnValue({ pipe: mockPipe })
+        jest.spyOn(fs.ReadStream, 'from').mockImplementation(mockReadStreamFrom)
+
+        const req = { params: {}, headers: { range: 'bytes=200-1000, 2000-6576, 19000-' } } as Request
+        const res = { pipe: mockPipe, set: mockResSet } as unknown as Response
+
+        await controllers.zipping(req, res)
+
+        await controllers.zipDirectory(controllers.filesDirectoryPath)
+
+        expect(mockResSet).toHaveBeenCalledWith('Content-Range', expect.stringMatching(/bytes \d+-\d+\/\d+/))
+
+        jest.resetAllMocks()
+    })
 })

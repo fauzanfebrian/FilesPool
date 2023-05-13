@@ -17,9 +17,8 @@
   <ul>
     <% files.forEach(function(file) { %>
     <li><a href="<%= file.url %>"><%= file.name %></a></li>
-    <% }) %>
-    <% if (subFolder) { %>
-    <br>
+    <% }) %> <% if (subFolder) { %>
+    <br />
     <a href="/">Back to home</a>
     <% } %>
   </ul>

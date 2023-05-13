@@ -69,7 +69,10 @@ export const staticFile = (req: Request, res: Response, next: NextFunction) => {
         if (!fs.existsSync(pathName)) return res.status(404).send(`cannot ${req.method} ${req.path}`)
 
         const isDirectory = fs.lstatSync(pathName).isDirectory()
-        if (isDirectory) return res.redirect(`/?folder=${req.path}`)
+        if (isDirectory) {
+            const redirectTo = `${req.path[0] !== '/' ? '/' : ''}${req.path}`
+            return res.redirect(redirectTo)
+        }
 
         const file = fs.readFileSync(pathName)
         const fileName = path.basename(pathName)
@@ -95,7 +98,7 @@ export const staticFile = (req: Request, res: Response, next: NextFunction) => {
 
 export const homePage = async (req: Request, res: Response) => {
     try {
-        const subFolder = typeof req.query.folder === 'string' ? req.query.folder : ''
+        const subFolder = typeof req.params.subFolder === 'string' ? req.params.subFolder : ''
         const directoryPath = path.join(filesDirectoryPath, subFolder)
         const filesName = fs.readdirSync(directoryPath)
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+echo
 echo "Checking your typescript code..."
 npx tsc --noEmit || (
     echo "There's syntax error in your code, please check again";
@@ -8,6 +9,7 @@ npx tsc --noEmit || (
     false;
 )
 
+echo
 echo "Running unit test..."
 npm test || (
     echo "Your code is not pass the unit test please check again";

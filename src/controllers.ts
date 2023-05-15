@@ -1,11 +1,11 @@
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response } from 'express'
 import fs from 'fs'
 import mime from 'mime'
 import ngrok from 'ngrok'
 import path from 'path'
 import range from 'range-parser'
-import { filesDirectoryPath, filesUri } from 'src/config'
-import { zipDirectory } from 'src/utils/zip'
+import { filesDirectoryPath, filesUri } from './config'
+import { zipDirectory } from './utils/zip'
 
 export const zipping = async (req: Request, res: Response) => {
     try {
@@ -30,7 +30,7 @@ export const zipping = async (req: Request, res: Response) => {
     }
 }
 
-export const staticFile = (req: Request, res: Response, next: NextFunction) => {
+export const staticFile = (req: Request, res: Response) => {
     try {
         const pathName = path.join(filesDirectoryPath, req.path)
 
@@ -54,7 +54,7 @@ export const staticFile = (req: Request, res: Response, next: NextFunction) => {
 
         if (req.headers.range) {
             const ranges = range(file.length, req.headers.range, { combine: true }) as range.Ranges
-            res.set('Content-Range', `bytes ${ranges[0].start}-${ranges[0].end}/${file.length}`)
+            if (ranges?.[0]) res.set('Content-Range', `bytes ${ranges[0].start}-${ranges[0].end}/${file.length}`)
         }
 
         fs.ReadStream.from(file).pipe(res)

@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import express from 'express'
-import { filesUri } from 'src/config'
-import { homePage, startNgrok, staticFile, zipping } from 'src/controllers'
+import { filesUri } from './config'
+import { homePage, startNgrok, staticFile, zipping } from './controllers'
 
 dotenv.config()
 
@@ -11,7 +11,7 @@ app.set('view engine', 'ejs')
 
 app.get(`/${filesUri}/:subFolder/zip`, zipping)
 app.get(`/${filesUri}/zip`, zipping)
-app.use(`/${filesUri}`, staticFile)
+app.get(`/${filesUri}`, staticFile)
 app.get('/:subFolder', homePage)
 app.get('/', homePage)
 

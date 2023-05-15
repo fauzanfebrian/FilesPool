@@ -1,8 +1,8 @@
 import fs from 'fs'
 import JSZip from 'jszip'
 import path from 'path'
-import { filesDirectoryPath } from 'src/config'
-import { zipDirectory } from 'src/utils/zip'
+import { filesDirectoryPath } from '../config'
+import { zipDirectory } from './zip'
 
 describe('zipDirectory', () => {
     it('zip & return the buffer data', async () => {

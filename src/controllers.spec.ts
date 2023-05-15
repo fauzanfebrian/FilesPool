@@ -12,7 +12,7 @@ describe('zipping', () => {
         const mockReadStreamFrom = jest.fn().mockReturnValue({ pipe: mockPipe })
         jest.spyOn(fs.ReadStream, 'from').mockImplementation(mockReadStreamFrom)
 
-        const req = { params: {}, headers: {} } as Request
+        const req = { query: {}, headers: {} } as Request
         const res = { pipe: mockPipe, set: jest.fn() } as unknown as Response
 
         await controllers.zipping(req, res)
@@ -31,7 +31,7 @@ describe('zipping', () => {
         const mockReadStreamFrom = jest.fn().mockReturnValue({ pipe: mockPipe })
         jest.spyOn(fs.ReadStream, 'from').mockImplementation(mockReadStreamFrom)
 
-        const req = { params: {}, headers: { range: 'bytes=200-1000, 2000-6576, 19000-' } } as Request
+        const req = { headers: { range: 'bytes=200-1000, 2000-6576, 19000-' }, query: {} } as Request
         const res = { pipe: mockPipe, set: mockResSet } as unknown as Response
 
         await controllers.zipping(req, res)
@@ -51,7 +51,7 @@ describe('staticFile', () => {
 
         const req = {
             path: '/hell.txt',
-            params: {},
+            query: {},
             headers: {},
         } as Request
         const res = { pipe: mockPipe, set: mockResSet } as unknown as Response
@@ -73,7 +73,7 @@ describe('staticFile', () => {
 
         const req = {
             path: '/hell.txt',
-            params: {},
+            query: {},
             headers: { range: 'bytes=1-3' },
         } as Request
         const res = { pipe: mockPipe, set: mockResSet } as unknown as Response

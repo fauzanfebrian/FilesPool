@@ -2,31 +2,37 @@ import fs from 'fs'
 import JSZip from 'jszip'
 import path from 'path'
 
+const fileBuffer = (itemPath: string) => fs.readFileSync(itemPath)
+const getDirectoryContents = (path: string) => {
+    try {
+        return fs.readdirSync(path)
+    } catch (error) {
+        return []
+    }
+}
+
 export const zipDirectory = async (directoryPath: string) => {
-    const zip = new JSZip()
+    const processDirectory = async (zip: JSZip, subFolderPath?: string) => {
+        const fullPath = subFolderPath ? path.join(directoryPath, subFolderPath) : directoryPath
 
-    const processDirectory = async (zip: JSZip, directoryPath: string, basePath?: string) => {
-        const fullPath = basePath ? path.join(directoryPath, basePath) : directoryPath
-        const directoryContents = fs.readdirSync(fullPath)
-
-        for (const item of directoryContents) {
+        for (const item of getDirectoryContents(fullPath)) {
             if (item === 'nodata') continue
 
-            const itemPath = basePath ? path.join(basePath, item) : item
-            const fullPath = path.join(directoryPath, itemPath)
+            const itemPath = path.join(fullPath, item)
 
-            if (fs.lstatSync(fullPath).isDirectory()) {
-                const folder = zip.folder(itemPath)
-                await processDirectory(folder, directoryPath, itemPath)
+            if (fs.lstatSync(itemPath).isDirectory()) {
+                const subFolderRoot = path.join(subFolderPath || '', item)
+                await processDirectory(zip.folder(item), subFolderRoot)
                 continue
             }
 
-            const fileBuffer = fs.readFileSync(fullPath)
-            zip.file(itemPath, fileBuffer)
+            zip.file(item, fileBuffer(itemPath))
         }
     }
 
-    await processDirectory(zip, directoryPath)
+    const zip = new JSZip()
+
+    await processDirectory(zip)
 
     return zip.generateAsync({ type: 'nodebuffer' })
 }

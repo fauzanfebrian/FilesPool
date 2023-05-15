@@ -6,10 +6,11 @@ import path from 'path'
 import range from 'range-parser'
 import { filesDirectoryPath, filesUri } from './config'
 import { zipDirectory } from './utils/zip'
+import { getSubFolder } from './utils/sub-folder'
 
 export const zipping = async (req: Request, res: Response) => {
     try {
-        const directoryPath = path.join(filesDirectoryPath, req.params.subFolder || '')
+        const directoryPath = path.join(filesDirectoryPath, getSubFolder(req.query.subFolder))
         const zip = await zipDirectory(directoryPath)
 
         res.set({
@@ -38,8 +39,8 @@ export const staticFile = (req: Request, res: Response) => {
 
         const isDirectory = fs.lstatSync(pathName).isDirectory()
         if (isDirectory) {
-            const redirectTo = `${req.path[0] !== '/' ? '/' : ''}${req.path}`
-            return res.redirect(redirectTo)
+            const subFolder = encodeURIComponent(`${req.path[0] !== '/' ? '/' : ''}${req.path}`)
+            return res.redirect(`/?subFolder=${subFolder}`)
         }
 
         const file = fs.readFileSync(pathName)
@@ -66,11 +67,11 @@ export const staticFile = (req: Request, res: Response) => {
 
 export const homePage = async (req: Request, res: Response) => {
     try {
-        const subFolder = typeof req.params.subFolder === 'string' ? req.params.subFolder : ''
+        const subFolder = getSubFolder(req.query.subFolder)
         const directoryPath = path.join(filesDirectoryPath, subFolder)
         const filesName = fs.readdirSync(directoryPath)
 
-        const subFolderUrl = subFolder && subFolder[0] !== '/' ? `/${subFolder}` : subFolder
+        const subFolderUrl = subFolder[0] !== '/' ? `/${subFolder}` : subFolder
 
         const files = filesName
             .filter(file => file !== 'nodata')
@@ -78,7 +79,9 @@ export const homePage = async (req: Request, res: Response) => {
                 name: file,
                 url: `/${filesUri}${subFolderUrl}/${file}`,
             }))
-        const filesZipUrl = `/${filesUri}${subFolderUrl}/zip`
+        const filesZipUrl = subFolderUrl
+            ? `/${filesUri}/zip?subFolder=${encodeURIComponent(subFolderUrl)}`
+            : `/${filesUri}/zip`
 
         const data = {
             files,

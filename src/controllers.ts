@@ -1,43 +1,11 @@
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response } from 'express'
 import fs from 'fs'
-import JSZip from 'jszip'
+import mime from 'mime'
 import ngrok from 'ngrok'
 import path from 'path'
 import range from 'range-parser'
-import mime from 'mime'
-
-export const filesUri = 'files'
-// change this variable if you want change the exposed directory
-export const filesDirectoryPath = path.join(process.cwd(), 'files')
-
-export const zipDirectory = async (directoryPath: string) => {
-    const zip = new JSZip()
-
-    const processDirectory = async (zip: JSZip, directoryPath: string, basePath?: string) => {
-        const fullPath = basePath ? path.join(directoryPath, basePath) : directoryPath
-        const directoryContents = fs.readdirSync(fullPath)
-
-        for (const item of directoryContents) {
-            if (item === 'nodata') continue
-
-            const itemPath = basePath ? path.join(basePath, item) : item
-            const fullPath = path.join(directoryPath, itemPath)
-
-            if (fs.lstatSync(fullPath).isDirectory()) {
-                const folder = zip.folder(itemPath)
-                await processDirectory(folder, directoryPath, itemPath)
-                continue
-            }
-
-            const fileBuffer = fs.readFileSync(fullPath)
-            zip.file(itemPath, fileBuffer)
-        }
-    }
-
-    await processDirectory(zip, directoryPath)
-
-    return zip.generateAsync({ type: 'nodebuffer' })
-}
+import { filesDirectoryPath, filesUri } from './config'
+import { zipDirectory } from './utils/zip'
 
 export const zipping = async (req: Request, res: Response) => {
     try {
@@ -62,14 +30,17 @@ export const zipping = async (req: Request, res: Response) => {
     }
 }
 
-export const staticFile = (req: Request, res: Response, next: NextFunction) => {
+export const staticFile = (req: Request, res: Response) => {
     try {
         const pathName = path.join(filesDirectoryPath, req.path)
 
         if (!fs.existsSync(pathName)) return res.status(404).send(`cannot ${req.method} ${req.path}`)
 
         const isDirectory = fs.lstatSync(pathName).isDirectory()
-        if (isDirectory) return res.redirect(`/?folder=${req.path}`)
+        if (isDirectory) {
+            const redirectTo = `${req.path[0] !== '/' ? '/' : ''}${req.path}`
+            return res.redirect(redirectTo)
+        }
 
         const file = fs.readFileSync(pathName)
         const fileName = path.basename(pathName)
@@ -83,7 +54,7 @@ export const staticFile = (req: Request, res: Response, next: NextFunction) => {
 
         if (req.headers.range) {
             const ranges = range(file.length, req.headers.range, { combine: true }) as range.Ranges
-            res.set('Content-Range', `bytes ${ranges[0].start}-${ranges[0].end}/${file.length}`)
+            if (ranges?.[0]) res.set('Content-Range', `bytes ${ranges[0].start}-${ranges[0].end}/${file.length}`)
         }
 
         fs.ReadStream.from(file).pipe(res)
@@ -95,7 +66,7 @@ export const staticFile = (req: Request, res: Response, next: NextFunction) => {
 
 export const homePage = async (req: Request, res: Response) => {
     try {
-        const subFolder = typeof req.query.folder === 'string' ? req.query.folder : ''
+        const subFolder = typeof req.params.subFolder === 'string' ? req.params.subFolder : ''
         const directoryPath = path.join(filesDirectoryPath, subFolder)
         const filesName = fs.readdirSync(directoryPath)
 

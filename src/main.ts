@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 import express from 'express'
-import { filesUri, homePage, startNgrok, staticFile, zipping } from './controllers'
+import { filesUri } from './config'
+import { homePage, startNgrok, staticFile, zipping } from './controllers'
 
 dotenv.config()
 
@@ -10,7 +11,8 @@ app.set('view engine', 'ejs')
 
 app.get(`/${filesUri}/:subFolder/zip`, zipping)
 app.get(`/${filesUri}/zip`, zipping)
-app.use(`/${filesUri}`, staticFile)
+app.get(`/${filesUri}`, staticFile)
+app.get('/:subFolder', homePage)
 app.get('/', homePage)
 
 const port = +process.env.PORT || 8098

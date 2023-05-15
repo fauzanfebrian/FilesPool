@@ -5,9 +5,11 @@
     "main": "index.js",
     "scripts": {
         "start": "npm run build && NODE_ENV=production node dist/main.js",
-        "dev": "NODE_ENV=development nodemon main.ts",
-        "build": "rimraf dist && tsc",
-        "build:exe": "ts-node build.ts"
+        "dev": "NODE_ENV=development nodemon src/main.ts",
+        "build": "rimraf dist && tsc --project tsconfig.json",
+        "build:exe": "ts-node build.ts",
+        "test": "jest --verbose",
+        "prepare": "husky install"
     },
     "keywords": [],
     "author": "",
@@ -22,10 +24,13 @@
     },
     "devDependencies": {
         "@types/express": "^4.17.17",
+        "@types/jest": "^29.5.1",
         "@types/node": "^18.16.3",
+        "husky": "^8.0.3",
         "nodemon": "^2.0.22",
         "pkg": "^5.8.1",
         "rimraf": "^5.0.0",
+        "ts-jest": "^29.1.0",
         "ts-node": "^10.9.1",
         "typescript": "^5.0.4"
     },
@@ -40,5 +45,24 @@
             "node16-mac-x64",
             "node16-win-x64"
         ]
+    },
+    "jest": {
+        "transform": {
+            "^.+\\.(t|j)s$": "ts-jest"
+        },
+        "rootDir": "src",
+        "testEnvironment": "node",
+        "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+        "moduleFileExtensions": [
+            "ts",
+            "tsx",
+            "js",
+            "jsx",
+            "json",
+            "node"
+        ],
+        "moduleNameMapper": {
+            "^src/(.*)$": "<rootDir>/$1"
+        }
     }
 }

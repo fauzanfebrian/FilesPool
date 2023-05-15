@@ -1,43 +1,11 @@
 import { NextFunction, Request, Response } from 'express'
 import fs from 'fs'
-import JSZip from 'jszip'
+import mime from 'mime'
 import ngrok from 'ngrok'
 import path from 'path'
 import range from 'range-parser'
-import mime from 'mime'
-
-export const filesUri = 'files'
-// change this variable if you want change the exposed directory
-export const filesDirectoryPath = path.join(process.cwd(), 'files')
-
-export const zipDirectory = async (directoryPath: string) => {
-    const zip = new JSZip()
-
-    const processDirectory = async (zip: JSZip, directoryPath: string, basePath?: string) => {
-        const fullPath = basePath ? path.join(directoryPath, basePath) : directoryPath
-        const directoryContents = fs.readdirSync(fullPath)
-
-        for (const item of directoryContents) {
-            if (item === 'nodata') continue
-
-            const itemPath = basePath ? path.join(basePath, item) : item
-            const fullPath = path.join(directoryPath, itemPath)
-
-            if (fs.lstatSync(fullPath).isDirectory()) {
-                const folder = zip.folder(itemPath)
-                await processDirectory(folder, directoryPath, itemPath)
-                continue
-            }
-
-            const fileBuffer = fs.readFileSync(fullPath)
-            zip.file(itemPath, fileBuffer)
-        }
-    }
-
-    await processDirectory(zip, directoryPath)
-
-    return zip.generateAsync({ type: 'nodebuffer' })
-}
+import { filesDirectoryPath, filesUri } from 'src/config'
+import { zipDirectory } from 'src/utils/zip'
 
 export const zipping = async (req: Request, res: Response) => {
     try {

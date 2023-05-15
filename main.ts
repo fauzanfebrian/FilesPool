@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 import express from 'express'
-import { filesUri, homePage, startNgrok, staticFile, zipping } from './controllers'
+import { filesUri } from 'src/config'
+import { homePage, startNgrok, staticFile, zipping } from 'src/controllers'
 
 dotenv.config()
 

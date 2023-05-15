@@ -49,6 +49,7 @@
         "transform": {
             "^.+\\.(t|j)s$": "ts-jest"
         },
+        "rootDir": "src",
         "testEnvironment": "node",
         "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
         "moduleFileExtensions": [
@@ -58,6 +59,9 @@
             "jsx",
             "json",
             "node"
-        ]
+        ],
+        "moduleNameMapper": {
+            "^src/(.*)$": "<rootDir>/$1"
+        }
     }
 }

@@ -9,10 +9,8 @@ const app = express()
 
 app.set('view engine', 'ejs')
 
-app.get(`/${filesUri}/:subFolder/zip`, zipping)
 app.get(`/${filesUri}/zip`, zipping)
-app.get(`/${filesUri}`, staticFile)
-app.get('/:subFolder', homePage)
+app.use(`/${filesUri}`, staticFile)
 app.get('/', homePage)
 
 const port = +process.env.PORT || 8098

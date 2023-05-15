@@ -13,7 +13,9 @@ describe('zipDirectory', () => {
 
     it('should not zip "nodata" file', async () => {
         const mockFile = jest.fn()
-        const mockFolder = jest.fn().mockReturnValue({ file: mockFile })
+        const mockFolder = jest.fn().mockImplementation(function () {
+            return this
+        })
 
         jest.spyOn(JSZip.prototype, 'folder').mockImplementation(mockFolder)
         jest.spyOn(JSZip.prototype, 'file').mockImplementation(mockFile)

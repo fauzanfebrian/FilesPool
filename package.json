@@ -8,7 +8,8 @@
         "dev": "NODE_ENV=development nodemon main.ts",
         "build": "rimraf dist && tsc",
         "build:exe": "ts-node build.ts",
-        "test": "jest --verbose"
+        "test": "jest --verbose",
+        "prepare": "husky install"
     },
     "keywords": [],
     "author": "",

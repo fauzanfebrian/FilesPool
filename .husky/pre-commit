@@ -1,0 +1,5 @@
+echo "Checking your typescript code..."
+tsc --noEmit
+
+echo "Running unit test..."
+npm test

@@ -1,5 +1,7 @@
 export const getSubFolder = (subFolder: any) => {
-    if (typeof subFolder !== 'string') return ''
+    if (!subFolder || typeof subFolder !== 'string') return ''
 
-    return decodeURIComponent(subFolder).replace(/\.\.(\/|\%2F)?/g, '/')
+    const sanitizedSubFolder = decodeURIComponent(subFolder).replace(/\.\.(\/|\%2F)?/g, '/')
+
+    return sanitizedSubFolder && sanitizedSubFolder[0] !== '/' ? `/${sanitizedSubFolder}` : sanitizedSubFolder
 }

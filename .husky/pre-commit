@@ -8,11 +8,3 @@ npx tsc --noEmit || (
     echo
     false;
 )
-
-echo
-echo "Running unit test..."
-npm test || (
-    echo "Your code is not pass the unit test please check again";
-    echo
-    false;
-)

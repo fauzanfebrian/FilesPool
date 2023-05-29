@@ -5,8 +5,8 @@ import ngrok from 'ngrok'
 import path from 'path'
 import range from 'range-parser'
 import { filesDirectoryPath, filesUri } from './config'
-import { zipDirectory } from './utils/zip'
 import { getSubFolder } from './utils/sub-folder'
+import { zipDirectory } from './utils/zip'
 
 export const zipping = async (req: Request, res: Response) => {
     try {
@@ -67,11 +67,9 @@ export const staticFile = (req: Request, res: Response) => {
 
 export const homePage = async (req: Request, res: Response) => {
     try {
-        const subFolder = getSubFolder(req.query.subFolder)
-        const directoryPath = path.join(filesDirectoryPath, subFolder)
+        const subFolderUrl = getSubFolder(req.query.subFolder)
+        const directoryPath = path.join(filesDirectoryPath, subFolderUrl)
         const filesName = fs.readdirSync(directoryPath)
-
-        const subFolderUrl = subFolder[0] !== '/' ? `/${subFolder}` : subFolder
 
         const files = filesName
             .filter(file => file !== 'nodata')
@@ -86,7 +84,7 @@ export const homePage = async (req: Request, res: Response) => {
         const data = {
             files,
             filesZipUrl,
-            subFolder: !!subFolder,
+            subFolder: !!subFolderUrl,
         }
 
         res.render('pages/home.ejs', data)
